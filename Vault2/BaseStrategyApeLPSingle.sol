@@ -16,7 +16,7 @@ abstract contract BaseStrategyApeLPSingle is BaseStrategyApeLP {
     
     function _vaultHarvest() internal virtual;
 
-    function _compound() internal override whenNotPaused {
+    function earn() internal override whenNotPaused onlyOwner {
         // Harvest farm tokens
         _vaultHarvest();
 
