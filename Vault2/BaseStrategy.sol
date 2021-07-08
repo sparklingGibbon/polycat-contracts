@@ -39,7 +39,6 @@ abstract contract BaseStrategy is Ownable, Pausable {
     uint256 public lastEarnBlock = block.number;
     uint256 public sharesTotal = 0;
 
-    uint256 public compoundMode;
     address public constant buyBackAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 public controllerFee = 0;
     uint256 public buyBackRate = 200;
@@ -74,26 +73,9 @@ abstract contract BaseStrategy is Ownable, Pausable {
     function wantLockedTotal() public virtual view returns (uint256);
     function _resetAllowances() internal virtual;
     function _emergencyVaultWithdraw() internal virtual;
-    function _compound() internal virtual;
+    function earn() internal virtual;
     
-    //0: compound by anyone; 1: EOA only; 2: gov only
-    modifier compounding() {
-        if (!paused() && (compoundMode == 0 || msg.sender == govAddress || (compoundMode == 1 && msg.sender == tx.origin)))
-            _compound();
-        _;
-    }
-    function compound() external whenNotPaused {
-        require(compoundMode == 0 || msg.sender == govAddress || (compoundMode == 1 && msg.sender == tx.origin),
-            "Compounding disabled"
-        );
-        _compound();
-    }
-    function setCompoundMode(uint mode) external virtual onlyGov {
-        
-        compoundMode = mode;
-    }
-    
-    function deposit(address _userAddress, uint256 _wantAmt) external onlyOwner whenNotPaused compounding returns (uint256) {
+    function deposit(address _userAddress, uint256 _wantAmt) external onlyOwner whenNotPaused returns (uint256) {
         // Call must happen before transfer
         uint256 wantLockedBefore = wantLockedTotal();
 
@@ -124,7 +106,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
         return sharesAfter.sub(sharesBefore);
     }
 
-    function withdraw(address _userAddress, uint256 _wantAmt) external onlyOwner compounding returns (uint256) {
+    function withdraw(address _userAddress, uint256 _wantAmt) external onlyOwner returns (uint256) {
         
         require(_wantAmt > 0, "_wantAmt is 0");
         
