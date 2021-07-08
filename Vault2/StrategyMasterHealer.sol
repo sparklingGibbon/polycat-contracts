@@ -23,11 +23,9 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
     constructor(
         address _vaultHealerAddress,
         address _masterHealerAddress,
-        address _apeFactoryAddress,
         uint256 _pid,
         address _wantAddress,
         address _earnedAddress,
-        uint256 _compoundMode,
         address[] memory _earnedToCrystlPath,
         address[] memory _earnedToToken0Path,
         address[] memory _earnedToToken1Path
@@ -35,7 +33,6 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
         govAddress = msg.sender;
         vaultHealerAddress = _vaultHealerAddress;
         masterHealer = IMasterHealer(_masterHealerAddress);
-        apeFactoryAddress = _apeFactoryAddress;
 
         wantAddress = _wantAddress;
         token0Address = IApePair(wantAddress).token0();
@@ -43,8 +40,6 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
 
         pid = _pid;
         earnedAddress = _earnedAddress;
-    
-        compoundMode = _compoundMode;
 
         earnedToCrystlPath = _earnedToCrystlPath;
         earnedToToken0Path = _earnedToToken0Path;
