@@ -1,4 +1,4 @@
-Deploy, transfer ownership, this part is simple
+Deploy VaultHealer, transfer ownership, this part is simple. This contract is the central hub that accepts user funds. It's the intermediary between the user and the strategies, which handle deposits and compounding
 
 Crystl-Matic LP strategy: 0x8901972723fa42277cA90f7322704Ef94c1daF3a
 
