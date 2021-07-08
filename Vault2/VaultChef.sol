@@ -7,10 +7,10 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1.0/contracts/utils/EnumerableSet.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1.0/contracts/utils/ReentrancyGuard.sol";
 
-import "./libs/IStrategy.sol";
+import "./interfaces/IStrategy.sol";
 import "./Operators.sol";
 
-contract VaultChef is Ownable, ReentrancyGuard, Operators {
+contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -48,8 +48,8 @@ contract VaultChef is Ownable, ReentrancyGuard, Operators {
                 strat: _strat
             })
         );
+        resetSingleAllowance(poolInfo.length - 1);
         strats[_strat] = true;
-        resetSingleAllowance(poolInfo.length.sub(1));
         emit AddPool(_strat);
     }
 
@@ -89,17 +89,7 @@ contract VaultChef is Ownable, ReentrancyGuard, Operators {
         emit Deposit(_to, _pid, _wantAmt);
     }
 
-    // Withdraw LP tokens from MasterChef.
-    function withdraw(uint256 _pid, uint256 _wantAmt) external nonReentrant {
-        _withdraw(_pid, _wantAmt, msg.sender);
-    }
-
-    // For unique contract calls
-    function withdraw(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator {
-        _withdraw(_pid, _wantAmt, _to);
-    }
-
-    function _withdraw(uint256 _pid, uint256 _wantAmt, address _to) internal {
+    function withdraw(uint256 _pid, uint256 _wantAmt) public nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
 
@@ -127,14 +117,14 @@ contract VaultChef is Ownable, ReentrancyGuard, Operators {
             if (wantBal < _wantAmt) {
                 _wantAmt = wantBal;
             }
-            pool.want.safeTransfer(_to, _wantAmt);
+            pool.want.safeTransfer(msg.sender, _wantAmt);
         }
         emit Withdraw(msg.sender, _pid, _wantAmt);
     }
 
     // Withdraw everything from pool for yourself
     function withdrawAll(uint256 _pid) external {
-        _withdraw(_pid, uint256(-1), msg.sender);
+        withdraw(_pid, uint256(-1));
     }
 
     function resetAllowances() external onlyOwner {
