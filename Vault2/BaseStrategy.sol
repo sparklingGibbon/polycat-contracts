@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT (routing code is GPL from apeswap and needs to be dealt with)
+// SPDX-License-Identifier: MIT
 
 /*
 Join us at PolyCrystal.Finance!
@@ -17,6 +17,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1
 
 import "./interfaces/IApePair.sol";
 import { ApeLibrary } from "./libraries/ApeLibrary.sol";
+import "./libraries/GibbonRouter.sol";
 
 abstract contract BaseStrategy is Ownable, Pausable {
     using SafeMath for uint256;
@@ -172,7 +173,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
         if (controllerFee > 0) {
             uint256 fee = _earnedAmt.mul(controllerFee)/feeMax;
     
-            _swap(
+            GibbonRouter._swap(
                 fee,
                 earnedToWmaticPath,
                 feeAddress
@@ -191,7 +192,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
         if (buyBackRate > 0) {
             uint256 buyBackAmt = _earnedAmt.mul(buyBackRate)/feeMax;
     
-            _swap(
+            GibbonRouter._swap(
                 buyBackAmt,
                 earnedToCrystlPath,
                 buyBackAddress
@@ -246,33 +247,5 @@ abstract contract BaseStrategy is Ownable, Pausable {
             _buyBackRate,
             _withdrawFeeFactor
         );
-    }
-
-    
-    //optimized swap routing as slippage and deadlines aren't a factor
-    function _swap(
-        uint amountIn,
-        address[] memory path,
-        address recipient
-    ) internal {
-        
-        //eg, the common case of earn crystl, "buyback" crystl
-        if (path.length == 1) {
-            IERC20(path[0]).safeTransfer(recipient, amountIn);
-            return;
-        }
-        
-        uint[] memory amounts = ApeLibrary.getAmountsOut(apeFactoryAddress, amountIn, path);
-        
-        IERC20(path[0]).safeTransfer(ApeLibrary.pairFor(apeFactoryAddress, path[0], path[1]), amounts[0]);
-            
-        for (uint i; i < path.length - 1; i++) {
-            (address input, address output) = (path[i], path[i + 1]);
-            (uint amount0Out, uint amount1Out) = input < output ? (uint(0), amounts[i + 1]) : (amounts[i + 1], uint(0));
-            address to = i < path.length - 2 ? ApeLibrary.pairFor(apeFactoryAddress, output, path[i + 2]) : recipient;
-            IApePair(ApeLibrary.pairFor(apeFactoryAddress, input, output)).swap(
-                amount0Out, amount1Out, to, new bytes(0)
-            );
-        }
     }
 }
