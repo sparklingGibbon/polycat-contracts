@@ -4,7 +4,7 @@ pragma solidity 0.6.12;
 
 import "./BaseStrategy.sol";
 
-abstract contract BaseStrategyLP is BaseStrategy {
+abstract contract BaseStrategyApeLP is BaseStrategy {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
