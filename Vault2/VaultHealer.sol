@@ -72,7 +72,7 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     }
 
     // For unique contract calls
-    function deposit(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator {
+    function deposit(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator autoCompound {
         _deposit(_pid, _wantAmt, _to);
     }
     
@@ -89,7 +89,7 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         emit Deposit(_to, _pid, _wantAmt);
     }
 
-    function withdraw(uint256 _pid, uint256 _wantAmt) public nonReentrant {
+    function withdraw(uint256 _pid, uint256 _wantAmt) public nonReentrant autoCompound {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
 
@@ -140,4 +140,34 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         pool.want.safeApprove(pool.strat, uint256(0));
         pool.want.safeIncreaseAllowance(pool.strat, uint256(-1));
     }
+    
+    //0: compound by anyone; 1: EOA only; 2: restricted to operators
+    uint public compoundLock = 0;
+    bool public autocompoundOn = true;
+    function setCompoundMode(uint lock, bool autoC) external onlyOwner {
+        compoundLock = lock;
+        autocompoundOn = autoC;
+    }
+    modifier autoCompound {
+        if (autocompoundOn && (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin)))
+            _compoundAll();
+        _;
+    }
+    function compoundAll() external {
+        if (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin))
+            _compoundAll();
+    }
+    
+    event CompoundError(uint, bytes);
+    function _compoundAll() internal {
+        for (uint i = 0; i < poolInfo.length; i++) {
+            //If something goes wrong with one strategy compounding, let's not break deposit and withdraw
+            try IStrategy(poolInfo[i].strat).earn() {
+                
+            } catch (bytes memory reason) {
+                emit CompoundError(i, reason);
+            }
+        }
+    }
+
 }
