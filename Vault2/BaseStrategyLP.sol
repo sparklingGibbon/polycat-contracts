@@ -8,7 +8,7 @@ abstract contract BaseStrategyLP is BaseStrategy {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    function convertDustToEarned() external nonReentrant whenNotPaused {
+    function convertDustToEarned() external onlyGov {
         // Converts dust tokens into earned tokens, which will be reinvested on the next earn().
 
         // Converts token0 dust (if any) to earned tokens
