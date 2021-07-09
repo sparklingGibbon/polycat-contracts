@@ -4,10 +4,10 @@ pragma solidity 0.6.12;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1.0/contracts/token/ERC20/SafeERC20.sol";
 
-import "../interfaces/IApePair.sol";
-import { ApeLibrary } from  "./ApeLibrary.sol";
+import "./interfaces/IApePair.sol";
+import { ApeLibrary } from  "./libraries/ApeLibrary.sol";
 
-library GibbonRouter {
+abstract contract GibbonRouter {
     using SafeERC20 for IERC20;
     
     address constant FACTORY_ADDRESS = 0xCf083Be4164828f00cAE704EC15a36D711491284;
