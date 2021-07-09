@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: GPL
+
+pragma solidity 0.6.12;
+
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1.0/contracts/token/ERC20/SafeERC20.sol";
 
 import "../interfaces/IApePair.sol";
@@ -14,6 +18,7 @@ library GibbonRouter {
         address recipient
     ) internal {
         
+        if (amountIn == 0) return;
         //the common case of the desired token being the token we already have
         if (path.length == 1) {
             IERC20(path[0]).safeTransfer(recipient, amountIn);
