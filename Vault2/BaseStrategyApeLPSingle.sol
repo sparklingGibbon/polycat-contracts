@@ -17,14 +17,16 @@ abstract contract BaseStrategyApeLPSingle is BaseStrategyApeLP {
     function _vaultHarvest() internal virtual;
 
     function earn() internal override whenNotPaused onlyOwner {
+        
+        if (lastEarnBlock == block.number) return; // only compound once per block max
+        
         // Harvest farm tokens
         _vaultHarvest();
 
         // Converts farm tokens into want tokens
         uint256 earnedAmt = IERC20(earnedAddress).balanceOf(address(this));
         if (earnedAmt == 0) return;
-        
-        earnedAmt = distributeFees(earnedAmt);
+
         earnedAmt = buyBack(earnedAmt);
 
         if (earnedAddress == token0Address) {
