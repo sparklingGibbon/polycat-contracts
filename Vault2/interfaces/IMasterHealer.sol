@@ -44,6 +44,8 @@ interface IMasterHealer {
         uint256 accCrystalPerShare;   // Accumulated CRYSTLs per share, times 1e18. See below.
         uint16 depositFeeBP;      // Deposit fee in basis points
     }
+    
+    function poolInfo(uint _pid) external view returns (address _lpToken, uint256 allocPoint, uint256 lastRewardBlock, uint256 accCrystalPerShare, uint16 depositFeeBP);
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
