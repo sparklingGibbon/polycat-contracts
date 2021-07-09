@@ -16,7 +16,7 @@ abstract contract BaseStrategyApeLPSingle is BaseStrategyApeLP {
     
     function _vaultHarvest() internal virtual;
 
-    function earn() internal override whenNotPaused onlyOwner {
+    function earn() external override whenNotPaused onlyOwner {
         
         if (lastEarnBlock == block.number) return; // only compound once per block max
         
@@ -31,14 +31,14 @@ abstract contract BaseStrategyApeLPSingle is BaseStrategyApeLP {
 
         if (earnedAddress == token0Address) {
             // Swap half earned to token1
-            GibbonRouter._swap(
+            _swap(
                 earnedAmt / 2,
                 earnedToToken1Path,
                 address(this)
             );
         } else if (earnedAddress == token1Address) {
             // Swap half earned to token0
-            GibbonRouter._swap(
+            _swap(
                 earnedAmt / 2,
                 earnedToToken0Path,
                 address(this)
