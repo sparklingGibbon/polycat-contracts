@@ -15,7 +15,7 @@ abstract contract BaseStrategyApeLP is BaseStrategy {
         uint256 token0Amt = IERC20(token0Address).balanceOf(address(this));
         if (token0Amt > 0 && token0Address != earnedAddress) {
             // Swap all dust tokens to earned tokens
-            GibbonRouter._swap(
+            _swap(
                 token0Amt,
                 token0ToEarnedPath,
                 address(this)
@@ -26,7 +26,7 @@ abstract contract BaseStrategyApeLP is BaseStrategy {
         uint256 token1Amt = IERC20(token1Address).balanceOf(address(this));
         if (token1Amt > 0 && token1Address != earnedAddress) {
             // Swap all dust tokens to earned tokens
-            GibbonRouter._swap(
+            _swap(
                 token1Amt,
                 token1ToEarnedPath,
                 address(this)
