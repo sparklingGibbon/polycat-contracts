@@ -164,12 +164,10 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     function _compoundAll() internal {
         for (uint i = 0; i < poolInfo.length; i++) {
             //If something goes wrong with one strategy compounding, let's not break deposit and withdraw
-            try IStrategy(poolInfo[i].strat).earn() {
-                
-            } catch (bytes memory reason) {
+            try IStrategy(poolInfo[i].strat).earn() {}
+            catch (bytes memory reason) {
                 emit CompoundError(i, reason);
             }
         }
     }
-
 }
