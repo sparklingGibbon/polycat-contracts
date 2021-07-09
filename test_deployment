@@ -1,0 +1,90 @@
+VaultHealer: 0xC1eE726D3E1D3B2ecff2D90978EB44cb6e5DDfE8
+
+Matic-Crystal strategy: 0x53373b4450787d1A853cb47b823f95C20664e41A (pid 0)
+{
+	"address _vaultHealerAddress": "0xC1eE726D3E1D3B2ecff2D90978EB44cb6e5DDfE8",
+	"address _masterHealerAddress": "0xeBCC84D2A73f0c9E23066089C6C24F4629Ef1e6d",
+	"uint256 _pid": "1",
+	"address _wantAddress": "0xB8e54c9Ea1616beEBe11505a419DD8dF1000E02a",
+	"address _earnedAddress": "0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+	"address[] _earnedToCrystlPath": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _earnedToToken0Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+	],
+	"address[] _earnedToToken1Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _token0ToEarnedPath": [
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _token1ToEarnedPath": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	]
+}
+Banana-Eth strategy: 0x32EC5C70470316E991AEb94E0b8284171d6EdcD8 (pid 1)
+
+{
+	"address _vaultHealerAddress": "0xC1eE726D3E1D3B2ecff2D90978EB44cb6e5DDfE8",
+	"address _masterHealerAddress": "0xeBCC84D2A73f0c9E23066089C6C24F4629Ef1e6d",
+	"uint256 _pid": "3",
+	"address _wantAddress": "0x44b82c02F404Ed004201FB23602cC0667B1D011e",
+	"address _earnedAddress": "0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+	"address[] _earnedToCrystlPath": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _earnedToToken0Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x5d47bAbA0d66083C52009271faF3F50DCc01023C"
+	],
+	"address[] _earnedToToken1Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+	],
+	"address[] _token0ToEarnedPath": [
+		"0x5d47bAbA0d66083C52009271faF3F50DCc01023C",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _token1ToEarnedPath": [
+		"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	]
+}
+
+Matic-Eth strategy: 0x39B83528E23f711FFD48bDA30C0E610AE87FA7b8 (pid 2)
+
+{
+	"address _vaultHealerAddress": "0xC1eE726D3E1D3B2ecff2D90978EB44cb6e5DDfE8",
+	"address _masterHealerAddress": "0xeBCC84D2A73f0c9E23066089C6C24F4629Ef1e6d",
+	"uint256 _pid": "4",
+	"address _wantAddress": "0x6Cf8654e85AB489cA7e70189046D507ebA233613",
+	"address _earnedAddress": "0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+	"address[] _earnedToCrystlPath": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _earnedToToken0Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+	],
+	"address[] _earnedToToken1Path": [
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+	],
+	"address[] _token0ToEarnedPath": [
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	],
+	"address[] _token1ToEarnedPath": [
+		"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+		"0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+		"0x76bF0C28e604CC3fE9967c83b3C3F31c213cfE64"
+	]
+}
