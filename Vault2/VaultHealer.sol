@@ -68,6 +68,8 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
 
     // Want tokens moved from user -> this -> Strat (compounding)
     function deposit(uint256 _pid, uint256 _wantAmt) external nonReentrant autoCompound {
+        require (_pid < poolInfo.length, "pool doesn't exist");
+        
         _deposit(_pid, _wantAmt, msg.sender);
     }
 
@@ -90,6 +92,8 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     }
 
     function withdraw(uint256 _pid, uint256 _wantAmt) public nonReentrant autoCompound {
+        require (_pid < poolInfo.length, "pool doesn't exist");
+        
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
 
@@ -128,7 +132,8 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     }
 
     function resetAllowances() external onlyOwner {
-        for (uint256 i=0; i<poolInfo.length; i++) {
+        uint numPools = poolInfo.length;
+        for (uint i = 0; i < numPools; i++) {
             PoolInfo storage pool = poolInfo[i];
             pool.want.safeApprove(pool.strat, uint256(0));
             pool.want.safeIncreaseAllowance(pool.strat, uint256(-1));
@@ -162,7 +167,8 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     
     event CompoundError(uint, bytes);
     function _compoundAll() internal {
-        for (uint i = 0; i < poolInfo.length; i++) {
+        uint numPools = poolInfo.length;
+        for (uint i = 0; i < numPools; i++) {
             //If something goes wrong with one strategy compounding, let's not break deposit and withdraw
             try IStrategy(poolInfo[i].strat).earn() {}
             catch (bytes memory reason) {
