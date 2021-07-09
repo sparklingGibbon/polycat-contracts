@@ -67,7 +67,7 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     }
 
     // Want tokens moved from user -> this -> Strat (compounding)
-    function deposit(uint256 _pid, uint256 _wantAmt) external nonReentrant {
+    function deposit(uint256 _pid, uint256 _wantAmt) external nonReentrant autoCompound {
         _deposit(_pid, _wantAmt, msg.sender);
     }
 
@@ -144,9 +144,11 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     //0: compound by anyone; 1: EOA only; 2: restricted to operators
     uint public compoundLock = 0;
     bool public autocompoundOn = true;
+    event SetCompoundMode(uint locked, bool automatic);
     function setCompoundMode(uint lock, bool autoC) external onlyOwner {
         compoundLock = lock;
         autocompoundOn = autoC;
+        emit SetCompoundMode(lock,autoC);
     }
     modifier autoCompound {
         if (autocompoundOn && (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin)))
@@ -154,7 +156,7 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         _;
     }
     function compoundAll() external {
-        if (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin))
+        require(compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin), "Compounding is restricted");
             _compoundAll();
     }
     
