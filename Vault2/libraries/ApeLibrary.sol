@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL
 pragma solidity >=0.5.0;
 
 /*
