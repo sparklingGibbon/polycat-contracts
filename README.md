@@ -3,7 +3,7 @@ PolyCrystal vaults
 
 The strategies consist of StrategyMasterHealer > BaseStrategyApeLPSingle > BaseStrategyApeLP > BaseStrategy. The StrategyMasterHealer is equipped to function with any of the "stake LP, earn crystal" farms.
 
-The central hub for the vaults is VaultHealer which accepts funds and distributes them to the strategies. It is the owner of the strategies and most of the functions are restricted to onlyOwner. Users normally interact via VaultHealer.
+The central hub for the vaults is VaultHealer which accepts funds and distributes them to the strategies. It is the owner of the strategies and most of the functions are restricted to onlyOwner. Users normally interact via VaultHealer. Users should authorize VaultHealer for the LP tokens they intend to deposit.
 
 Routing has been simplified and code from ApeRouter has been adapted to a GibbonRouter library, bypassing the slippage and deadline checks, which as noted in the PolyCat audits, had no effect.
 
