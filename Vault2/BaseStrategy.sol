@@ -17,9 +17,9 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.1
 
 import "./interfaces/IApePair.sol";
 import { ApeLibrary } from "./libraries/ApeLibrary.sol";
-import "./libraries/GibbonRouter.sol";
+import "./GibbonRouter.sol";
 
-abstract contract BaseStrategy is Ownable, Pausable {
+abstract contract BaseStrategy is Ownable, Pausable, GibbonRouter {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -40,11 +40,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
     uint256 public buyBackRate = 200;
     uint256 public constant feeMaxTotal = 500;
     uint256 public constant feeMax = 10000; // 100 = 1%
-
-    uint256 public withdrawFeeFactor = 0;
-    uint256 public constant withdrawFeeFactorMax = 500;
-
-    address[] public earnedToWmaticPath;
+    
     address[] public earnedToCrystlPath;
     address[] public earnedToToken0Path;
     address[] public earnedToToken1Path;
@@ -52,8 +48,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
     address[] public token1ToEarnedPath;
     
     event SetSettings(
-        uint256 _buyBackRate,
-        uint256 _withdrawFeeFactor
+        uint256 _buyBackRate
     );
     
     modifier onlyGov() {
@@ -67,9 +62,9 @@ abstract contract BaseStrategy is Ownable, Pausable {
     function wantLockedTotal() public virtual view returns (uint256);
     function _resetAllowances() internal virtual;
     function _emergencyVaultWithdraw() internal virtual;
-    function earn() internal virtual;
+    function earn() external virtual;
     
-    function deposit(address _userAddress, uint256 _wantAmt) external onlyOwner whenNotPaused returns (uint256) {
+    function deposit(address /*_userAddress*/, uint256 _wantAmt) external onlyOwner whenNotPaused returns (uint256) {
         // Call must happen before transfer
         uint256 wantLockedBefore = wantLockedTotal();
 
@@ -100,7 +95,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
         return sharesAfter.sub(sharesBefore);
     }
 
-    function withdraw(address _userAddress, uint256 _wantAmt) external onlyOwner returns (uint256) {
+    function withdraw(address /*_userAddress*/, uint256 _wantAmt) external onlyOwner returns (uint256) {
         
         require(_wantAmt > 0, "_wantAmt is 0");
         
@@ -126,20 +121,6 @@ abstract contract BaseStrategy is Ownable, Pausable {
         }
         sharesTotal = sharesTotal.sub(sharesRemoved);
         
-        // Withdraw fee
-        uint256 withdrawFee = _wantAmt
-            .mul(withdrawFeeFactor)
-            / 10000;
-        if (withdrawFee > 0) {
-            GibbonRouter._swap(
-                withdrawFee,
-                earnedToCrystlPath,
-                buyBackAddress
-            );
-        }
-        
-        _wantAmt = _wantAmt.sub(withdrawFee);
-
         IERC20(wantAddress).safeTransfer(vaultHealerAddress, _wantAmt);
 
         return sharesRemoved;
@@ -152,7 +133,7 @@ abstract contract BaseStrategy is Ownable, Pausable {
         if (buyBackRate > 0) {
             uint256 buyBackAmt = _earnedAmt.mul(buyBackRate)/feeMax;
     
-            GibbonRouter._swap(
+            _swap(
                 buyBackAmt,
                 earnedToCrystlPath,
                 buyBackAddress
@@ -192,17 +173,13 @@ abstract contract BaseStrategy is Ownable, Pausable {
     }
     
     function setSettings(
-        uint256 _buyBackRate,
-        uint256 _withdrawFeeFactor
+        uint256 _buyBackRate
     ) external onlyGov {
         require(_buyBackRate <= feeMaxTotal, "Max fee of 5%");
-        require(_withdrawFeeFactor <= withdrawFeeFactorMax, "_withdrawFeeFactor too high");
         buyBackRate = _buyBackRate;
-        withdrawFeeFactor = _withdrawFeeFactor;
 
         emit SetSettings(
-            _buyBackRate,
-            _withdrawFeeFactor
+            _buyBackRate
         );
     }
 }
