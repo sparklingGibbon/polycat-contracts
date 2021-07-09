@@ -28,12 +28,17 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
         address _earnedAddress,
         address[] memory _earnedToCrystlPath,
         address[] memory _earnedToToken0Path,
-        address[] memory _earnedToToken1Path
+        address[] memory _earnedToToken1Path,
+        address[] memory _token0ToEarnedPath,
+        address[] memory _token1ToEarnedPath
     ) public {
         govAddress = msg.sender;
         vaultHealerAddress = _vaultHealerAddress;
         masterHealer = IMasterHealer(_masterHealerAddress);
 
+        (address healerWantAddress,,,,) = masterHealer.poolInfo(_pid);
+        require(healerWantAddress == _wantAddress, "Assigned pid doesn't match want token");
+        
         wantAddress = _wantAddress;
         token0Address = IApePair(wantAddress).token0();
         token1Address = IApePair(wantAddress).token1();
@@ -44,7 +49,9 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
         earnedToCrystlPath = _earnedToCrystlPath;
         earnedToToken0Path = _earnedToToken0Path;
         earnedToToken1Path = _earnedToToken1Path;
-
+        token0ToEarnedPath = _token0ToEarnedPath;
+        token1ToEarnedPath = _token1ToEarnedPath;
+        
         transferOwnership(vaultHealerAddress);
         
         _resetAllowances();
