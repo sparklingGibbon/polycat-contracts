@@ -1,3 +1,6 @@
+Most up to date docs at https://github.com/sparklingGibbon/polycrystal-vaults/blob/master/deployment.md
+
+Cleanup tomorrow
 
 PolyCrystal vaults
 
