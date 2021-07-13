@@ -1,6 +1,6 @@
-Most up to date docs at https://github.com/sparklingGibbon/polycrystal-vaults/blob/master/deployment.md
+Most up to date doc at https://github.com/sparklingGibbon/polycrystal-vaults/blob/master/deployment.md
 
-Cleanup tomorrow
+Code is forked from https://github.com/polycatfi/polycat-contracts/tree/master/Vault2
 
 PolyCrystal vaults
 
