@@ -39,13 +39,21 @@ contract StrategyMasterHealer is BaseStrategyApeLPSingle {
         (address healerWantAddress,,,,) = masterHealer.poolInfo(_pid);
         require(healerWantAddress == _wantAddress, "Assigned pid doesn't match want token");
         
+        pid = _pid;                     // pid for the MasterHealer pool
         wantAddress = _wantAddress;
+        
         token0Address = IApePair(wantAddress).token0();
         token1Address = IApePair(wantAddress).token1();
 
-        pid = _pid;
-        earnedAddress = _earnedAddress;
+        require(
+            _earnedToCrystlPath[0] == _earnedAddress && _earnedToCrystlPath[_earnedToCrystlPath.length - 1] == crystlAddress 
+            && _token0ToEarnedPath[0] == token0Address && _token0ToEarnedPath[_token0ToEarnedPath.length - 1] == _earnedAddress
+            && _token1ToEarnedPath[0] == token1Address && _token1ToEarnedPath[_token1ToEarnedPath.length - 1] == _earnedAddress
+            && _earnedToToken0Path[0] == _earnedAddress && _earnedToToken0Path[_earnedToToken0Path.length - 1] == token0Address
+            && _earnedToToken1Path[0] == _earnedAddress && _earnedToToken1Path[_earnedToToken1Path.length - 1] == token1Address,
+            "Tokens and paths mismatch");
 
+        earnedAddress = _earnedAddress;
         earnedToCrystlPath = _earnedToCrystlPath;
         earnedToToken0Path = _earnedToToken0Path;
         earnedToToken1Path = _earnedToToken1Path;
