@@ -36,9 +36,9 @@ The privileged owner address can change the compound mode. The owner can also de
 
 ##### Deployment checklist:
 
-*Deploy VaultHealer contract
-*Deploy strategy contracts
-*for each strategy address: 
-	*VaultHealer.addPool(strategyAddress)
-	*Set gov address
-*Set VaultHealer owner
+* Deploy VaultHealer contract
+* Deploy strategy contracts
+* for each strategy address: 
+	* VaultHealer.addPool(strategyAddress)
+	* Set gov address
+* Set VaultHealer owner
