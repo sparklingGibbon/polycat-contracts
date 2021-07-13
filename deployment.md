@@ -22,7 +22,7 @@ This has one function, a convertDustToEarned function. I changed it to onlyGov b
 
 This contains earn() which is the compounding function. Originally, it was designed to be run by a bot at the gov address. I modified it to be controlled by VaultHealer. A maximum of one time per block, it collects earnings, pays the burn fee, then makes LP tokens from the rest. Pretty typical compounding here. I tried to eliminate the minor problem of token dust accumulating by pseudorandomly alternating the order in which the tokens are purchased; this is computationally cheap and safe, whether it's successful or not.
 
-StrategyMasterHealer.sol
+##### StrategyMasterHealer.sol
 
 This completes the strategy implementation. One of these will need to be deployed for each pool where we want a vault. As the strategy handles its own routing via GibbonRouter, no external router needs to be approved to transfer tokens out. All token paths must still be specified in the constructor. The new require checks should make this nearly foolproof. We want to use established liquidity pairs in as few steps as possible. For example, to convert WETH to crystl, we'd use \[wethAddr, maticAddr, crystlAddr\]. "Earned to crystl" should generally just be \[crystlAddr\].
 
