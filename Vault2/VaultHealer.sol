@@ -165,9 +165,9 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         emit SetCompoundMode(lock,autoC);
     }
     modifier autoCompound {
-        _;
         if (autocompoundOn && (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin)))
             _compoundAll();
+        _;
     }
     function compoundAll() external {
         require(compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin), "Compounding is restricted");
