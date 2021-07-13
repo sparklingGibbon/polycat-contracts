@@ -46,20 +46,20 @@ abstract contract BaseStrategyApeLPSingle is BaseStrategyApeLP {
         } else {
             // Pseudorandomly pick one to swap to first. Perfect distribution and unpredictability are unnecessary, we just don't want dust collecting
             uint tokenFirst = block.timestamp % 2;
-            GibbonRouter._swap(
+            _swap(
             earnedAmt / 2,
             tokenFirst == 0 ? earnedToToken0Path : earnedToToken1Path,
             address(this)
             );
             //then swap the rest to the other
-            GibbonRouter._swap(
+            _swap(
             IERC20(earnedAddress).balanceOf(address(this)),
             tokenFirst == 0 ? earnedToToken1Path : earnedToToken0Path,
             address(this)
             );
         }
 
-        GibbonRouter.add_all_liquidity(
+        add_all_liquidity(
             wantAddress,
             token0Address,
             token1Address
