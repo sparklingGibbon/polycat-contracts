@@ -74,7 +74,7 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
     }
 
     // For unique contract calls
-    function deposit(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator autoCompound {
+    function deposit(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator {
         _deposit(_pid, _wantAmt, _to);
     }
     
@@ -91,7 +91,16 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         emit Deposit(_to, _pid, _wantAmt);
     }
 
-    function withdraw(uint256 _pid, uint256 _wantAmt) public nonReentrant autoCompound {
+    function withdraw(uint256 _pid, uint256 _wantAmt) external nonReentrant autoCompound {
+        _withdraw(_pid, _wantAmt, msg.sender);
+    }
+
+    // For unique contract calls
+    function withdraw(uint256 _pid, uint256 _wantAmt, address _to) external nonReentrant onlyOperator {
+        _withdraw(_pid, _wantAmt, _to);
+    }
+
+    function _withdraw(uint256 _pid, uint256 _wantAmt, address _to) internal {
         require (_pid < poolInfo.length, "pool doesn't exist");
         
         PoolInfo storage pool = poolInfo[_pid];
@@ -121,14 +130,14 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
             if (wantBal < _wantAmt) {
                 _wantAmt = wantBal;
             }
-            pool.want.safeTransfer(msg.sender, _wantAmt);
+            pool.want.safeTransfer(_to, _wantAmt);
         }
         emit Withdraw(msg.sender, _pid, _wantAmt);
     }
 
     // Withdraw everything from pool for yourself
-    function withdrawAll(uint256 _pid) external {
-        withdraw(_pid, uint256(-1));
+    function withdrawAll(uint256 _pid) external nonReentrant autoCompound {
+        _withdraw(_pid, uint256(-1), msg.sender);
     }
 
     function resetAllowances() external onlyOwner {
@@ -156,9 +165,9 @@ contract VaultHealer is Ownable, ReentrancyGuard, Operators {
         emit SetCompoundMode(lock,autoC);
     }
     modifier autoCompound {
+        _;
         if (autocompoundOn && (compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin)))
             _compoundAll();
-        _;
     }
     function compoundAll() external {
         require(compoundLock == 0 || operators[msg.sender] || (compoundLock == 1 && msg.sender == tx.origin), "Compounding is restricted");
